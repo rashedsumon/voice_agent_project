@@ -4,21 +4,18 @@ import av
 import numpy as np
 import wavio
 import os
-import threading
-import time
 
 # Create assets folder if it doesn't exist
 os.makedirs("assets", exist_ok=True)
 
-def record_audio(duration=5, fs=44100):
+def record_audio(fs=44100):
     """
-    Record audio from the browser for a fixed duration using Streamlit WebRTC.
+    Record audio from the browser using Streamlit WebRTC.
     Returns path to the WAV file.
     """
-    st.write(f"Recording audio for {duration} seconds...")
+    st.write("Click Start to begin recording and Stop when done.")
 
     audio_file = "assets/recorded.wav"
-    frames = []
 
     class AudioProcessor:
         def __init__(self):
@@ -39,27 +36,16 @@ def record_audio(duration=5, fs=44100):
         ),
         audio_processor_factory=lambda: processor,
         async_processing=True,
-        desired_playing_state=True,
     )
 
-    # Wait for the specified duration
-    start_time = time.time()
-    while time.time() - start_time < duration:
-        st.sleep(0.1)
-
-    # Stop the WebRTC streamer
-    webrtc_ctx.stop()
-
-    # Process recorded frames
-    if processor.frames:
-        audio_data = np.concatenate(processor.frames, axis=1).T  # Proper shape for wavio
-        wavio.write(audio_file, audio_data, fs, sampwidth=2)
-        st.success(f"Audio saved to {audio_file}")
-        return audio_file
-    else:
-        st.warning("No audio recorded.")
-        return None
-
-# Example usage in Streamlit
-if st.button("Record Audio"):
-    record_audio(duration=5)
+    if st.button("Stop Recording"):
+        webrtc_ctx.stop()
+        if processor.frames:
+            # Ensure all frames are same length
+            audio_data = np.hstack(processor.frames)
+            wavio.write(audio_file, audio_data, fs, sampwidth=2)
+            st.success(f"Audio saved to {audio_file}")
+            return audio_file
+        else:
+            st.warning("No audio recorded.")
+            return None

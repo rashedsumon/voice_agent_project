@@ -1,0 +1,10 @@
+streamlit
+speechrecognition
+pydub
+transformers
+torch
+sounddevice
+numpy
+pandas
+scikit-learn
+kagglehub

@@ -1,10 +1,12 @@
 streamlit
+streamlit-webrtc
 speechrecognition
 pydub
 transformers
 torch
-sounddevice
 numpy
 pandas
 scikit-learn
 kagglehub
+wavio
+av

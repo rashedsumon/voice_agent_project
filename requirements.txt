@@ -1,5 +1,6 @@
 streamlit
 streamlit-webrtc
+av
 speechrecognition
 pydub
 transformers
@@ -9,4 +10,3 @@ pandas
 scikit-learn
 kagglehub
 wavio
-av
